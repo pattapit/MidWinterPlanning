@@ -6,77 +6,105 @@
     <title>Mid-Winter Planning</title>
     <link rel="manifest" href="data:application/json;base64,ewogICJzaG9ydF9uYW1lIjogIk1lYWxzIiwKICAibmFtZSI6ICJNaWQtV2ludGVyIE1lYWwgUGxhbm5lciIsCiAgImljb25zIjogW3sgInNyYyI6ICJodHRwczovL2Nkbi1pY29ucy1wbmcuZmxpdGljb24uY29tLzUxMi8zNDA0LzM0MDQ5MzcucG5nIiwgInR5cGUiOiAiaW1hZ2UvcG5nIiwgInNpemVzIjogIjUxMng1MTIiIH1dLAogICJzdGFydF91cmwiOiAiLiIsCiAgImRpc3BsYXkiOiAic3RhbmRhbG9uZSIsCiAgImJhY2tncm91bmRfY29sb3IiOiAiI2ZmZmZmZiIKfQ==">
     <style>
-        /* RESET & WRAPPER */
-        * { box-sizing: border-box; }
-        :root { --primary: #2ecc71; --dark: #2c3e50; --light: #f4f7f6; --accent: #3498db; --white: #ffffff; }
+        /* RESET & HUSKY THEME */
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        :root { 
+            --uw-purple: #4b2e83; 
+            --uw-gold: #b7a57a; 
+            --light: #f4f7f6; 
+            --white: #ffffff; 
+            --dark: #2c3e50;
+        }
         
         body { 
-            font-family: -apple-system, sans-serif; 
-            background: #4a4e69; /* Darker background so you can see the app container */
+            font-family: -apple-system, system-ui, sans-serif; 
+            background: var(--uw-purple); /* Husky Purple Background */
             margin: 0; 
             padding: 0; 
             display: flex;
             justify-content: center;
         }
 
-        /* THE MAIN BOX - This prevents the "wide and janky" desktop look */
         .app-container { 
             width: 100%;
             max-width: 480px; 
             background: var(--light); 
             min-height: 100vh; 
             padding: 15px; 
-            box-shadow: 0 0 40px rgba(0,0,0,0.3);
-            position: relative;
+            box-shadow: 0 0 40px rgba(0,0,0,0.5);
         }
 
         /* NAVIGATION */
         .nav { display: flex; gap: 8px; margin-bottom: 20px; position: sticky; top: 0; background: var(--light); padding: 10px 0; z-index: 10; }
-        .nav button { flex: 1; padding: 12px; border: none; border-radius: 8px; background: #cbd5e0; font-weight: bold; cursor: pointer; font-size: 0.9rem; }
-        .nav button.active { background: var(--primary); color: white; }
+        .nav button { flex: 1; padding: 12px; border: none; border-radius: 8px; background: #ddd; font-weight: bold; cursor: pointer; color: var(--dark); }
+        .nav button.active { background: var(--uw-purple); color: var(--uw-gold); }
 
         /* CARDS */
-        .card { background: var(--white); padding: 15px; border-radius: 12px; margin-bottom: 15px; border-top: 5px solid var(--primary); box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .card { background: var(--white); padding: 15px; border-radius: 12px; margin-bottom: 15px; border-top: 5px solid var(--uw-gold); box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
         input, textarea, select { 
-            width: 100% !important; 
-            display: block !important;
+            width: 100%; 
             padding: 12px; 
             margin: 8px 0; 
-            border: 1px solid #e2e8f0; 
+            border: 1px solid #ddd; 
             border-radius: 8px; 
-            background: #f8fafc; 
-            font-size: 16px; /* Prevents iOS zoom */
+            background: #fff; 
+            font-size: 16px;
         }
         
-        /* POPUP MODAL - FIXED FORMATTING */
+        /* THE STUBBORN MODAL FIX */
         #picker-modal { 
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; 
-            background: rgba(0,0,0,0.8); display: flex; align-items: center; justify-content: center; z-index: 9999; 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: rgba(0,0,0,0.85); display: flex; align-items: center; justify-content: center; z-index: 9999; 
         }
         .modal-content { 
-            background: white; width: 90%; max-width: 400px; padding: 20px; border-radius: 16px; 
-            max-height: 80vh; overflow-y: auto; 
+            background: white; 
+            width: 90%; 
+            max-width: 380px; 
+            padding: 20px; 
+            border-radius: 16px; 
+            max-height: 85vh; 
+            overflow-y: auto;
+            overflow-x: hidden; /* Stops horizontal bleed */
         }
+
+        /* Fixed Toggle All Bar */
+        .toggle-all-bar { 
+            background: #f1f2f6; 
+            padding: 12px; 
+            border-radius: 8px; 
+            margin-bottom: 15px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: flex-start; /* Keeps it to the left */
+            gap: 12px; 
+            font-weight: bold; 
+            cursor: pointer;
+            border: 2px solid var(--uw-gold);
+            width: 100%; /* Forces it to respect modal-content padding */
+        }
+        .toggle-all-bar input { width: 22px !important; height: 22px !important; margin: 0; }
+
         .modal-item { 
-            border-bottom: 1px solid #edf2f7; padding: 15px 0; 
-            display: flex; flex-direction: column; gap: 10px; 
+            border-bottom: 1px solid #eee; 
+            padding: 15px 0; 
+            display: flex; 
+            flex-direction: column; 
+            gap: 8px; 
         }
-        .modal-label-row { display: flex; align-items: flex-start; gap: 12px; }
+        .modal-label-row { display: flex; align-items: flex-start; gap: 10px; }
         .modal-label-row input { width: 24px !important; height: 24px !important; margin: 0; flex-shrink: 0; }
-        .modal-label-row label { font-weight: bold; font-size: 1rem; line-height: 1.3; color: var(--dark); word-break: break-word; }
+        .modal-label-row label { font-weight: bold; font-size: 1rem; color: var(--dark); word-break: break-word; }
         
-        /* Store Dropdown specific style so you know it changed */
-        select.store-select { background: #ebf8ff; border: 1px solid #bee3f8; color: #2b6cb0; font-weight: 500; }
+        select.store-select { background: #fff; border: 2px solid #ddd; color: var(--dark); }
 
         /* SHOPPING LIST */
-        .store-group { margin-top: 25px; }
-        .store-header { background: var(--dark); color: white; padding: 10px; border-radius: 8px; font-weight: bold; font-size: 0.9rem; letter-spacing: 1px; }
+        .store-header { background: var(--uw-purple); color: var(--uw-gold); padding: 10px; border-radius: 8px; font-weight: bold; margin-top: 20px; text-transform: uppercase; }
+        .category-header { font-weight: bold; font-size: 0.75rem; color: #7f8c8d; text-transform: uppercase; margin: 12px 0 5px 10px; }
         .shopping-item { display: flex; align-items: center; padding: 12px; background: white; margin: 6px 0; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
-        .shopping-item input { width: 20px; height: 20px; margin-right: 12px; flex-shrink: 0; }
         .shopping-item.checked { opacity: 0.4; text-decoration: line-through; order: 99; }
 
-        .btn-save { background: var(--primary); color: white; border: none; padding: 15px; border-radius: 8px; width: 100%; font-weight: bold; font-size: 1rem; cursor: pointer; margin-top: 10px; }
-        .btn-add-list { background: var(--accent); color: white; border: none; padding: 6px 14px; border-radius: 20px; font-size: 0.75rem; font-weight: bold; }
+        .btn-save { background: var(--uw-purple); color: var(--uw-gold); border: none; padding: 15px; border-radius: 8px; width: 100%; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        .btn-add-list { background: var(--uw-gold); color: var(--uw-purple); border: none; padding: 6px 14px; border-radius: 20px; font-size: 0.75rem; font-weight: bold; }
         
         .hidden { display: none !important; }
     </style>
@@ -90,26 +118,26 @@
     </div>
 
     <div id="page-plan">
-        <div id="meal-container">Loading...</div>
+        <div id="meal-container">Loading Plan...</div>
     </div>
 
     <div id="page-shop" class="hidden">
-        <h2 style="margin: 0 0 10px 0;">Shopping List</h2>
+        <h2 style="margin: 0 0 10px 0; color: var(--uw-purple);">My Shopping List</h2>
         <div id="shopping-container" style="display: flex; flex-direction: column;"></div>
-        <button class="btn-save" style="background: #e53e3e; margin-top: 30px;" onclick="clearList()">🗑 Clear Done Items</button>
+        <button class="btn-save" style="background: #c0392b; color: white; margin-top: 30px;" onclick="clearList()">🗑 Clear Done Items</button>
     </div>
 </div>
 
 <div id="picker-modal" class="hidden">
     <div class="modal-content">
-        <h3 style="margin-top:0">Pick Items & Store</h3>
-        <div style="background: #edf2f7; padding: 10px; border-radius: 8px; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; cursor: pointer;" onclick="toggleAll()">
-            <input type="checkbox" id="master-toggle" checked style="width:20px; height:20px; margin:0">
-            <span style="font-weight:bold">Select/Unselect All</span>
+        <h3 style="margin-top:0; color: var(--uw-purple);">Add Items</h3>
+        <div class="toggle-all-bar" onclick="toggleAll()">
+            <input type="checkbox" id="master-toggle" checked onclick="event.stopPropagation(); toggleAll();">
+            <span>Select/Unselect All</span>
         </div>
         <div id="modal-items-list"></div>
-        <button class="btn-save" onclick="confirmAdd()">Add to My List</button>
-        <button class="btn-save" style="background:#a0aec0; margin-top:8px" onclick="closeModal()">Cancel</button>
+        <button class="btn-save" onclick="confirmAdd()">Add to List</button>
+        <button class="btn-save" style="background:#bdc3c7; color: #2c3e50; margin-top:8px" onclick="closeModal()">Cancel</button>
     </div>
 </div>
 
@@ -117,9 +145,9 @@
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyXSCfmOtrTAJw9_o-MQD1p9DEqHf179gTNVUaR7UqbmDwBdURBmsL7jooQb-98azev/exec";
     const STORES = ["Costco", "Winco", "Trader Joes", "Safeway", "Convenience Store", "Other"];
     const categoryMap = {
-        "Produce": ["cilantro", "tomato", "onion", "lime", "pepper", "lettuce", "garlic", "spinach", "fruit", "veggie", "corn", "jalapeno", "avocado", "pico"],
+        "Produce": ["cilantro", "tomato", "onion", "lime", "pepper", "lettuce", "garlic", "spinach", "fruit", "veggie", "corn", "jalapeno", "avocado", "pico", "radish"],
         "Meat": ["pork", "beef", "chicken", "shoulder", "steak", "sausage", "bacon", "meat", "carnitas", "al pastor"],
-        "Dairy": ["milk", "cheese", "butter", "yogurt", "crema", "cotija", "egg"],
+        "Dairy": ["milk", "cheese", "butter", "yogurt", "crema", "cotija", "egg", "sour cream"],
         "Pantry": ["beans", "rice", "broth", "oil", "can", "pasta", "spice", "sugar", "flour", "chips", "tortillas", "pizza"]
     };
 
@@ -144,7 +172,7 @@
             card.className = 'card';
             card.innerHTML = `
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-                    <h3 style="margin:0; font-size:1.1rem; color:var(--dark);">${row.day}</h3>
+                    <h3 style="margin:0; font-size:1.1rem; color:var(--uw-purple);">${row.day}</h3>
                     <button class="btn-add-list" onclick="openPicker('${row.ingredients.replace(/'/g, "\\'")}')">+ To List</button>
                 </div>
                 <input type="text" value="${row.meal || ''}" id="meal-${row.day}" placeholder="Meal Name">
@@ -185,7 +213,8 @@
 
     function toggleAll() {
         const master = document.getElementById('master-toggle');
-        master.checked = !master.checked;
+        // Toggle the state only if triggered by the bar, otherwise the checkbox handles itself
+        if (event.target.id !== "master-toggle") master.checked = !master.checked;
         document.querySelectorAll('.picker-check').forEach(c => c.checked = master.checked);
     }
 
@@ -228,7 +257,6 @@
         STORES.forEach(store => {
             if(grouped[store]) {
                 const groupDiv = document.createElement('div');
-                groupDiv.className = 'store-group';
                 groupDiv.innerHTML = `<div class="store-header">${store}</div>`;
                 Object.keys(grouped[store]).sort().forEach(aisle => {
                     groupDiv.innerHTML += `<div class="category-header">${aisle}</div>`;
@@ -236,7 +264,7 @@
                         const isChecked = item.checked ? 'checked' : '';
                         groupDiv.innerHTML += `<div class="shopping-item ${isChecked}">
                             <input type="checkbox" ${isChecked} onchange="toggleItem('${item.id}')">
-                            <span>${item.name}</span></div>`;
+                            <span style="margin-left: 10px;">${item.name}</span></div>`;
                     });
                 });
                 container.appendChild(groupDiv);
