@@ -6,102 +6,59 @@
     <title>Mid-Winter Planning</title>
     <link rel="manifest" href="data:application/json;base64,ewogICJzaG9ydF9uYW1lIjogIk1lYWxzIiwKICAibmFtZSI6ICJNaWQtV2ludGVyIE1lYWwgUGxhbm5lciIsCiAgImljb25zIjogW3sgInNyYyI6ICJodHRwczovL2Nkbi1pY29ucy1wbmcuZmxpdGljb24uY29tLzUxMi8zNDA0LzM0MDQ5MzcucG5nIiwgInR5cGUiOiAiaW1hZ2UvcG5nIiwgInNpemVzIjogIjUxMng1MTIiIH1dLAogICJzdGFydF91cmwiOiAiLiIsCiAgImRpc3BsYXkiOiAic3RhbmRhbG9uZSIsCiAgImJhY2tncm91bmRfY29sb3IiOiAiI2ZmZmZmZiIKfQ==">
     <style>
-        /* RESET & HUSKY THEME */
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        :root { 
-            --uw-purple: #4b2e83; 
-            --uw-gold: #b7a57a; 
-            --light: #f4f7f6; 
-            --white: #ffffff; 
-            --dark: #2c3e50;
-        }
+        :root { --uw-purple: #4b2e83; --uw-gold: #b7a57a; --light: #f4f7f6; --white: #ffffff; --dark: #2c3e50; }
         
-        body { 
-            font-family: -apple-system, system-ui, sans-serif; 
-            background: var(--uw-purple); /* Husky Purple Background */
-            margin: 0; 
-            padding: 0; 
-            display: flex;
-            justify-content: center;
-        }
+        body { font-family: -apple-system, system-ui, sans-serif; background: var(--uw-purple); margin: 0; padding: 0; display: flex; justify-content: center; }
 
-        .app-container { 
-            width: 100%;
-            max-width: 480px; 
-            background: var(--light); 
-            min-height: 100vh; 
-            padding: 15px; 
-            box-shadow: 0 0 40px rgba(0,0,0,0.5);
-        }
+        .app-container { width: 100%; max-width: 480px; background: var(--light); min-height: 100vh; padding: 15px; box-shadow: 0 0 40px rgba(0,0,0,0.5); }
 
-        /* NAVIGATION */
         .nav { display: flex; gap: 8px; margin-bottom: 20px; position: sticky; top: 0; background: var(--light); padding: 10px 0; z-index: 10; }
         .nav button { flex: 1; padding: 12px; border: none; border-radius: 8px; background: #ddd; font-weight: bold; cursor: pointer; color: var(--dark); }
         .nav button.active { background: var(--uw-purple); color: var(--uw-gold); }
 
-        /* CARDS */
         .card { background: var(--white); padding: 15px; border-radius: 12px; margin-bottom: 15px; border-top: 5px solid var(--uw-gold); box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        input, textarea, select { 
-            width: 100%; 
-            padding: 12px; 
-            margin: 8px 0; 
-            border: 1px solid #ddd; 
-            border-radius: 8px; 
-            background: #fff; 
-            font-size: 16px;
-        }
+        input, textarea, select { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 8px; background: #fff; font-size: 16px; }
         
-        /* THE STUBBORN MODAL FIX */
-        #picker-modal { 
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-            background: rgba(0,0,0,0.85); display: flex; align-items: center; justify-content: center; z-index: 9999; 
-        }
-        .modal-content { 
-            background: white; 
-            width: 90%; 
-            max-width: 380px; 
-            padding: 20px; 
-            border-radius: 16px; 
-            max-height: 85vh; 
-            overflow-y: auto;
-            overflow-x: hidden; /* Stops horizontal bleed */
-        }
-
-        /* Fixed Toggle All Bar */
-        .toggle-all-bar { 
-            background: #f1f2f6; 
-            padding: 12px; 
-            border-radius: 8px; 
-            margin-bottom: 15px; 
+        /* SHOPPING LIST FIXES */
+        .store-header { background: var(--uw-purple); color: var(--uw-gold); padding: 12px; border-radius: 8px; font-weight: bold; margin-top: 25px; text-transform: uppercase; letter-spacing: 1px; }
+        .category-header { font-weight: bold; font-size: 0.75rem; color: #7f8c8d; text-transform: uppercase; margin: 15px 0 5px 5px; }
+        
+        .shopping-item { 
             display: flex; 
             align-items: center; 
-            justify-content: flex-start; /* Keeps it to the left */
-            gap: 12px; 
-            font-weight: bold; 
-            cursor: pointer;
-            border: 2px solid var(--uw-gold);
-            width: 100%; /* Forces it to respect modal-content padding */
+            justify-content: flex-start; /* Aligns checkbox and text to the left */
+            padding: 15px; 
+            background: white; 
+            margin: 8px 0; 
+            border-radius: 8px; 
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1); 
+            width: 100%;
         }
-        .toggle-all-bar input { width: 22px !important; height: 22px !important; margin: 0; }
+        .shopping-item input { 
+            width: 24px !important; 
+            height: 24px !important; 
+            margin: 0 15px 0 0 !important; /* Forces checkbox to stay on the left with a 15px gap */
+            flex-shrink: 0; 
+        }
+        .shopping-item span { 
+            font-size: 1rem; 
+            color: var(--dark); 
+            line-height: 1.4;
+            word-break: break-word;
+            text-align: left; /* Ensures text is left-aligned */
+        }
+        .shopping-item.checked { opacity: 0.4; text-decoration: line-through; order: 99; }
 
-        .modal-item { 
-            border-bottom: 1px solid #eee; 
-            padding: 15px 0; 
-            display: flex; 
-            flex-direction: column; 
-            gap: 8px; 
-        }
-        .modal-label-row { display: flex; align-items: flex-start; gap: 10px; }
+        /* MODAL FIXES */
+        #picker-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: flex; align-items: center; justify-content: center; z-index: 9999; }
+        .modal-content { background: white; width: 90%; max-width: 380px; padding: 20px; border-radius: 16px; max-height: 85vh; overflow-y: auto; overflow-x: hidden; }
+        .toggle-all-bar { background: #f1f2f6; padding: 12px; border-radius: 8px; margin-bottom: 15px; display: flex; align-items: center; gap: 12px; font-weight: bold; cursor: pointer; border: 2px solid var(--uw-gold); }
+        .toggle-all-bar input { width: 22px !important; height: 22px !important; margin: 0; }
+        .modal-item { border-bottom: 1px solid #eee; padding: 15px 0; display: flex; flex-direction: column; gap: 10px; }
+        .modal-label-row { display: flex; align-items: flex-start; gap: 12px; }
         .modal-label-row input { width: 24px !important; height: 24px !important; margin: 0; flex-shrink: 0; }
         .modal-label-row label { font-weight: bold; font-size: 1rem; color: var(--dark); word-break: break-word; }
-        
-        select.store-select { background: #fff; border: 2px solid #ddd; color: var(--dark); }
-
-        /* SHOPPING LIST */
-        .store-header { background: var(--uw-purple); color: var(--uw-gold); padding: 10px; border-radius: 8px; font-weight: bold; margin-top: 20px; text-transform: uppercase; }
-        .category-header { font-weight: bold; font-size: 0.75rem; color: #7f8c8d; text-transform: uppercase; margin: 12px 0 5px 10px; }
-        .shopping-item { display: flex; align-items: center; padding: 12px; background: white; margin: 6px 0; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
-        .shopping-item.checked { opacity: 0.4; text-decoration: line-through; order: 99; }
 
         .btn-save { background: var(--uw-purple); color: var(--uw-gold); border: none; padding: 15px; border-radius: 8px; width: 100%; font-weight: bold; cursor: pointer; margin-top: 10px; }
         .btn-add-list { background: var(--uw-gold); color: var(--uw-purple); border: none; padding: 6px 14px; border-radius: 20px; font-size: 0.75rem; font-weight: bold; }
@@ -110,17 +67,12 @@
     </style>
 </head>
 <body>
-
 <div class="app-container">
     <div class="nav">
         <button id="nav-plan" class="active" onclick="showPage('plan')">📅 Meal Plan</button>
         <button id="nav-shop" onclick="showPage('shop')">🛒 My List</button>
     </div>
-
-    <div id="page-plan">
-        <div id="meal-container">Loading Plan...</div>
-    </div>
-
+    <div id="page-plan"><div id="meal-container">Loading...</div></div>
     <div id="page-shop" class="hidden">
         <h2 style="margin: 0 0 10px 0; color: var(--uw-purple);">My Shopping List</h2>
         <div id="shopping-container" style="display: flex; flex-direction: column;"></div>
@@ -177,7 +129,7 @@
                 </div>
                 <input type="text" value="${row.meal || ''}" id="meal-${row.day}" placeholder="Meal Name">
                 <input type="text" value="${row.family || ''}" id="family-${row.day}" placeholder="Family">
-                <textarea id="ing-${row.day}" placeholder="Ingredients...">${row.ingredients || ''}</textarea>
+                <textarea id="ing-${row.day}">${row.ingredients || ''}</textarea>
                 <button class="btn-save" onclick="saveMeal('${row.day}')">Save Plan</button>`;
             container.appendChild(card);
         });
@@ -196,7 +148,6 @@
         const listContainer = document.getElementById('modal-items-list');
         listContainer.innerHTML = '';
         document.getElementById('master-toggle').checked = true;
-        
         tempItems.forEach((item, idx) => {
             let options = STORES.map(s => `<option value="${s}">${s}</option>`).join('');
             listContainer.innerHTML += `
@@ -213,7 +164,6 @@
 
     function toggleAll() {
         const master = document.getElementById('master-toggle');
-        // Toggle the state only if triggered by the bar, otherwise the checkbox handles itself
         if (event.target.id !== "master-toggle") master.checked = !master.checked;
         document.querySelectorAll('.picker-check').forEach(c => c.checked = master.checked);
     }
@@ -256,18 +206,18 @@
 
         STORES.forEach(store => {
             if(grouped[store]) {
-                const groupDiv = document.createElement('div');
-                groupDiv.innerHTML = `<div class="store-header">${store}</div>`;
+                container.innerHTML += `<div class="store-header">${store}</div>`;
                 Object.keys(grouped[store]).sort().forEach(aisle => {
-                    groupDiv.innerHTML += `<div class="category-header">${aisle}</div>`;
+                    container.innerHTML += `<div class="category-header">${aisle}</div>`;
                     grouped[store][aisle].forEach(item => {
                         const isChecked = item.checked ? 'checked' : '';
-                        groupDiv.innerHTML += `<div class="shopping-item ${isChecked}">
-                            <input type="checkbox" ${isChecked} onchange="toggleItem('${item.id}')">
-                            <span style="margin-left: 10px;">${item.name}</span></div>`;
+                        container.innerHTML += `
+                            <div class="shopping-item ${isChecked}">
+                                <input type="checkbox" ${isChecked} onchange="toggleItem('${item.id}')">
+                                <span>${item.name}</span>
+                            </div>`;
                     });
                 });
-                container.appendChild(groupDiv);
             }
         });
     }
