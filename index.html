@@ -2,67 +2,102 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Family Meal Planner</title>
-    <link rel="manifest" href="data:application/json;base64,ewogICJzY2hlbWUiOiAiaHR0cHMiLAogICJzaG9ydF9uYW1lIjogIk1lYWxzIiwKICAibmFtZSI6ICJGYW1pbHkgTWVhbCBQbGFubmVyIiwKICAiaWNvbnMiOiBbCiAgICB7CiAgICAgICJzcmMiOiAiaHR0cHM6Ly9jZG4taWNvbnMtcG5nLmZsaXRpY29uLmNvbS81MTIvMzQwNC8zNDA0OTM3LnBuZyIsCiAgICAgICJ0eXBlIjogImltYWdlL3BuZyIsCiAgICAgICJzaXplcyI6ICI1MTJ4NTEyIgogICAgfQogIF0sCiAgInN0YXJ0X3VybCI6ICIuIiwKICAiZGlzcGxheSI6ICJzdGFuZGFsb25lIiwKICAiYmFja2dyb3VuZF9jb2xvciI6ICIjZmZmZmZmIgp9">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Mid-Winter Planning</title>
+    <link rel="manifest" href="data:application/json;base64,ewogICJzaG9ydF9uYW1lIjogIk1lYWxzIiwKICAibmFtZSI6ICJNaWQtV2ludGVyIE1lYWwgUGxhbm5lciIsCiAgImljb25zIjogW3sgInNyYyI6ICJodHRwczovL2Nkbi1pY29ucy1wbmcuZmxpdGljb24uY29tLzUxMi8zNDA0LzM0MDQ5MzcucG5nIiwgInR5cGUiOiAiaW1hZ2UvcG5nIiwgInNpemVzIjogIjUxMng1MTIiIH1dLAogICJzdGFydF91cmwiOiAiLiIsCiAgImRpc3BsYXkiOiAic3RhbmRhbG9uZSIsCiAgImJhY2tncm91bmRfY29sb3IiOiAiI2ZmZmZmZiIKfQ==">
     <style>
-        :root { --primary: #2ecc71; --dark: #2c3e50; --light: #f4f7f6; }
-        body { font-family: -apple-system, sans-serif; background: var(--light); margin: 0; padding: 20px; color: var(--dark); }
+        :root { --primary: #2ecc71; --dark: #2c3e50; --light: #f4f7f6; --accent: #3498db; --white: #ffffff; }
+        
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
+            background: #dcdde1; 
+            margin: 0; 
+            padding: 0; 
+            color: var(--dark); 
+        }
+
+        /* Desktop Scaling Fix */
+        .app-container {
+            max-width: 500px; /* Limits width on desktop */
+            margin: 0 auto;
+            background: var(--light);
+            min-height: 100vh;
+            padding: 20px;
+            box-sizing: border-box;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+
+        /* Navigation */
         .nav { display: flex; gap: 10px; margin-bottom: 20px; position: sticky; top: 0; background: var(--light); padding: 10px 0; z-index: 10; }
-        .nav button { flex: 1; padding: 12px; border: none; border-radius: 8px; background: #ddd; font-weight: bold; }
+        .nav button { flex: 1; padding: 12px; border: none; border-radius: 8px; background: #ddd; font-weight: bold; cursor: pointer; }
         .nav button.active { background: var(--primary); color: white; }
         
-        .card { background: white; padding: 15px; border-radius: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); margin-bottom: 15px; }
-        .day-title { font-weight: bold; font-size: 1.2rem; color: var(--primary); margin-bottom: 5px; }
-        input, textarea { width: 100%; box-sizing: border-box; padding: 10px; margin-top: 5px; border: 1px solid #ddd; border-radius: 6px; }
+        /* Cards */
+        .card { background: var(--white); padding: 15px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); margin-bottom: 20px; border-top: 4px solid var(--primary); }
+        .day-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .day-title { font-weight: 800; font-size: 1.2rem; margin: 0; }
         
-        .shopping-item { display: flex; align-items: center; padding: 10px 0; border-bottom: 1px solid #eee; }
-        .shopping-item.checked { opacity: 0.5; text-decoration: line-through; order: 99; }
-        .category-header { background: #eee; padding: 5px 10px; font-size: 0.8rem; text-transform: uppercase; border-radius: 4px; margin-top: 15px; }
+        /* Form Styling */
+        label { font-size: 0.75rem; font-weight: bold; color: #7f8c8d; text-transform: uppercase; display: block; margin-top: 10px; }
+        input, textarea { width: 100%; box-sizing: border-box; padding: 12px; margin-top: 4px; border: 1px solid #edf2f7; border-radius: 8px; background: #f8fafc; font-size: 1rem; }
+        textarea { height: 70px; resize: none; }
         
+        /* Buttons */
+        .btn-save { background: var(--primary); color: white; border: none; padding: 12px; border-radius: 8px; width: 100%; font-weight: bold; margin-top: 15px; cursor: pointer; }
+        .btn-add-list { background: var(--accent); color: white; border: none; padding: 6px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: bold; cursor: pointer; }
+        
+        /* Shopping List */
+        .shopping-item { display: flex; align-items: center; padding: 12px; background: white; border-radius: 8px; margin-bottom: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        .shopping-item input { width: 18px; height: 18px; margin-right: 12px; margin-top: 0; }
+        .shopping-item.checked { opacity: 0.4; text-decoration: line-through; order: 99; }
+        .category-header { font-weight: bold; font-size: 0.7rem; color: #95a5a6; text-transform: uppercase; margin: 15px 0 5px 5px; }
+        
+        .sync-status { text-align: center; font-size: 0.7rem; color: #95a5a6; margin-top: 20px; }
         .hidden { display: none; }
-        .btn-save { background: var(--primary); color: white; border: none; padding: 10px; border-radius: 6px; width: 100%; margin-top: 10px; cursor: pointer; }
-        .add-btn { background: #3498db; color: white; border: none; padding: 5px 10px; border-radius: 4px; float: right; cursor: pointer; }
     </style>
 </head>
 <body>
 
+<div class="app-container">
     <div class="nav">
-        <button id="nav-plan" class="active" onclick="showPage('plan')">📅 Meal Plan</button>
-        <button id="nav-shop" onclick="showPage('shop')">🛒 Shopping List</button>
+        <button id="nav-plan" class="active" onclick="showPage('plan')">📅 Plan</button>
+        <button id="nav-shop" onclick="showPage('shop')">🛒 My List</button>
     </div>
 
     <div id="page-plan">
-        <div id="meal-container">Loading shared plan...</div>
+        <div id="meal-container">Getting the plan from Google...</div>
+        <div id="sync-info" class="sync-status"></div>
     </div>
 
     <div id="page-shop" class="hidden">
-        <h3>My Personal List</h3>
+        <h2 style="margin-top:0">My Shopping List</h2>
         <div id="shopping-container" style="display: flex; flex-direction: column;"></div>
-        <button class="btn-save" style="background: #e74c3c; margin-top: 30px;" onclick="clearList()">🗑 Clear Checked Items</button>
+        <button class="btn-save" style="background: #e74c3c; margin-top: 40px;" onclick="clearList()">🗑 Clear Checked Items</button>
     </div>
+</div>
 
-    <script>
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyXSCfmOtrTAJw9_o-MQD1p9DEqHf179gTNVUaR7UqbmDwBdURBmsL7jooQb-98azev/exec";
-        
-        const categoryMap = {
-            "Produce": ["cilantro", "tomato", "onion", "lime", "pepper", "lettuce", "garlic", "spinach", "fruit", "veggie"],
-            "Meat": ["pork", "beef", "chicken", "shoulder", "steak", "sausage", "bacon", "meat"],
-            "Dairy": ["milk", "cheese", "butter", "sour cream", "yogurt"],
-            "Pantry/Canned": ["beans", "rice", "broth", "oil", "can", "pasta", "spice", "sugar", "flour"]
-        };
+<script>
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyXSCfmOtrTAJw9_o-MQD1p9DEqHf179gTNVUaR7UqbmDwBdURBmsL7jooQb-98azev/exec";
+    
+    // Auto-categorization rules
+    const categoryMap = {
+        "Produce": ["cilantro", "tomato", "onion", "lime", "pepper", "lettuce", "garlic", "spinach", "fruit", "veggie", "corn", "jalapeno", "avocado"],
+        "Meat": ["pork", "beef", "chicken", "shoulder", "steak", "sausage", "bacon", "meat", "carnitas"],
+        "Dairy/Fridge": ["milk", "cheese", "butter", "yogurt", "crema", "cotija", "egg"],
+        "Pantry": ["beans", "rice", "broth", "oil", "can", "pasta", "spice", "sugar", "flour", "chips", "tortillas"]
+    };
 
-        // --- CORE NAVIGATION ---
-        function showPage(page) {
-            document.getElementById('page-plan').classList.toggle('hidden', page !== 'plan');
-            document.getElementById('page-shop').classList.toggle('hidden', page !== 'shop');
-            document.getElementById('nav-plan').classList.toggle('active', page === 'plan');
-            document.getElementById('nav-shop').classList.toggle('active', page === 'shop');
-            if(page === 'shop') renderShoppingList();
-        }
+    function showPage(page) {
+        document.getElementById('page-plan').classList.toggle('hidden', page !== 'plan');
+        document.getElementById('page-shop').classList.toggle('hidden', page !== 'shop');
+        document.getElementById('nav-plan').classList.toggle('active', page === 'plan');
+        document.getElementById('nav-shop').classList.toggle('active', page === 'shop');
+        if(page === 'plan') loadMeals();
+        if(page === 'shop') renderShoppingList();
+    }
 
-        // --- DATA SYNC (GOOGLE SHEETS) ---
-        async function loadMeals() {
+    async function loadMeals() {
+        try {
             const resp = await fetch(SCRIPT_URL);
             const data = await resp.json();
             const container = document.getElementById('meal-container');
@@ -72,97 +107,104 @@
                 const card = document.createElement('div');
                 card.className = 'card';
                 card.innerHTML = `
-                    <div class="day-title">${row.day} <button class="add-btn" onclick="addMealToList('${row.ingredients}')">+ Add to List</button></div>
-                    <input type="text" placeholder="Meal Name" value="${row.meal}" id="meal-${row.day}">
-                    <input type="text" placeholder="Claimed by (Family Name)" value="${row.family}" id="family-${row.day}">
-                    <textarea placeholder="Ingredients (comma separated)" id="ing-${row.day}">${row.ingredients}</textarea>
+                    <div class="day-header">
+                        <h3 class="day-title">${row.day}</h3>
+                        <button class="btn-add-list" onclick="addMealToList('${row.ingredients}')">+ To List</button>
+                    </div>
+                    <label>What's the meal?</label>
+                    <input type="text" value="${row.meal || ''}" id="meal-${row.day}" placeholder="Ex: Tacos">
+                    <label>Who's cooking?</label>
+                    <input type="text" value="${row.family || ''}" id="family-${row.day}" placeholder="Family Name">
+                    <label>Ingredients (comma separated)</label>
+                    <textarea id="ing-${row.day}" placeholder="Rice, Beans, Pork...">${row.ingredients || ''}</textarea>
                     <button class="btn-save" onclick="saveMeal('${row.day}')">Save to Group Plan</button>
                 `;
                 container.appendChild(card);
             });
+            document.getElementById('sync-info').innerText = "Last synced: " + new Date().toLocaleTimeString();
+        } catch (e) {
+            document.getElementById('meal-container').innerText = "Sync Error. Check internet.";
         }
+    }
 
-        async function saveMeal(day) {
-            const payload = {
-                day: day,
-                meal: document.getElementById(`meal-${day}`).value,
-                family: document.getElementById(`family-${day}`).value,
-                ingredients: document.getElementById(`ing-${day}`).value
-            };
-            
-            const btn = event.target;
-            btn.innerText = "Saving...";
-            await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) });
-            btn.innerText = "Saved!";
-            setTimeout(() => btn.innerText = "Save to Group Plan", 2000);
+    async function saveMeal(day) {
+        const payload = {
+            day: day,
+            meal: document.getElementById(`meal-${day}`).value,
+            family: document.getElementById(`family-${day}`).value,
+            ingredients: document.getElementById(`ing-${day}`).value
+        };
+        const btn = event.target;
+        btn.innerText = "Saving...";
+        await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) });
+        btn.innerText = "Saved!";
+        setTimeout(() => btn.innerText = "Save to Group Plan", 2000);
+    }
+
+    function addMealToList(ingredients) {
+        if(!ingredients || ingredients === "undefined") return alert("No ingredients to add!");
+        let list = JSON.parse(localStorage.getItem('myShoppingList') || '[]');
+        const newItems = ingredients.split(',').map(i => ({ name: i.trim(), checked: false }));
+        localStorage.setItem('myShoppingList', JSON.stringify([...list, ...newItems]));
+        alert("Added to your shopping list!");
+    }
+
+    function getAisle(item) {
+        item = item.toLowerCase();
+        for (const [aisle, keywords] of Object.entries(categoryMap)) {
+            if (keywords.some(k => item.includes(k))) return aisle;
         }
+        return "Other / Misc";
+    }
 
-        // --- SHOPPING LIST LOGIC (LOCAL STORAGE) ---
-        function addMealToList(ingredients) {
-            if(!ingredients) return alert("No ingredients listed!");
-            let list = JSON.parse(localStorage.getItem('myShoppingList') || '[]');
-            const newItems = ingredients.split(',').map(i => ({ name: i.trim(), checked: false }));
-            list = [...list, ...newItems];
-            localStorage.setItem('myShoppingList', JSON.stringify(list));
-            alert("Added to your shopping list!");
-        }
+    function renderShoppingList() {
+        const container = document.getElementById('shopping-container');
+        const list = JSON.parse(localStorage.getItem('myShoppingList') || '[]');
+        container.innerHTML = '';
+        
+        const grouped = list.reduce((acc, item) => {
+            const aisle = getAisle(item.name);
+            if (!acc[aisle]) acc[aisle] = [];
+            acc[aisle].push(item);
+            return acc;
+        }, {});
 
-        function getAisle(item) {
-            item = item.toLowerCase();
-            for (const [aisle, keywords] of Object.entries(categoryMap)) {
-                if (keywords.some(k => item.includes(k))) return aisle;
-            }
-            return "Other / Misc";
-        }
+        Object.keys(grouped).sort().forEach(aisle => {
+            const header = document.createElement('div');
+            header.className = 'category-header';
+            header.innerText = aisle;
+            container.appendChild(header);
 
-        function renderShoppingList() {
-            const container = document.getElementById('shopping-container');
-            const list = JSON.parse(localStorage.getItem('myShoppingList') || '[]');
-            container.innerHTML = '';
+            grouped[aisle].forEach(item => {
+                const div = document.createElement('div');
+                div.className = `shopping-item ${item.checked ? 'checked' : ''}`;
+                div.innerHTML = `
+                    <input type="checkbox" ${item.checked ? 'checked' : ''} onchange="toggleItem('${item.name}')">
+                    <span>${item.name}</span>
+                `;
+                container.appendChild(div);
+            });
+        });
+    }
 
-            // Group by Aisle
-            const grouped = list.reduce((acc, item) => {
-                const aisle = getAisle(item.name);
-                if (!acc[aisle]) acc[aisle] = [];
-                acc[aisle].push(item);
-                return acc;
-            }, {});
+    function toggleItem(name) {
+        let list = JSON.parse(localStorage.getItem('myShoppingList') || '[]');
+        const item = list.find(i => i.name === name);
+        if(item) item.checked = !item.checked;
+        localStorage.setItem('myShoppingList', JSON.stringify(list));
+        renderShoppingList();
+    }
 
-            for (const [aisle, items] of Object.entries(grouped)) {
-                const header = document.createElement('div');
-                header.className = 'category-header';
-                header.innerText = aisle;
-                container.appendChild(header);
+    function clearList() {
+        let list = JSON.parse(localStorage.getItem('myShoppingList') || '[]');
+        localStorage.setItem('myShoppingList', JSON.stringify(list.filter(i => !i.checked)));
+        renderShoppingList();
+    }
 
-                items.forEach((item, index) => {
-                    const div = document.createElement('div');
-                    div.className = `shopping-item ${item.checked ? 'checked' : ''}`;
-                    div.innerHTML = `
-                        <input type="checkbox" ${item.checked ? 'checked' : ''} onchange="toggleItem('${item.name}')">
-                        <span style="margin-left:10px">${item.name}</span>
-                    `;
-                    container.appendChild(div);
-                });
-            }
-        }
+    // Auto-refresh when opening the app
+    document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") loadMeals(); });
+    loadMeals();
+</script>
 
-        function toggleItem(name) {
-            let list = JSON.parse(localStorage.getItem('myShoppingList') || '[]');
-            const item = list.find(i => i.name === name);
-            if(item) item.checked = !item.checked;
-            localStorage.setItem('myShoppingList', JSON.stringify(list));
-            renderShoppingList();
-        }
-
-        function clearList() {
-            let list = JSON.parse(localStorage.getItem('myShoppingList') || '[]');
-            list = list.filter(i => !i.checked);
-            localStorage.setItem('myShoppingList', JSON.stringify(list));
-            renderShoppingList();
-        }
-
-        // Initial Load
-        loadMeals();
-    </script>
 </body>
 </html>
