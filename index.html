@@ -8,26 +8,34 @@
     <style>
         :root { --primary: #2ecc71; --dark: #2c3e50; --light: #f4f7f6; --accent: #3498db; --white: #ffffff; }
         body { font-family: -apple-system, sans-serif; background: #dcdde1; margin: 0; padding: 0; color: var(--dark); }
+        
         .app-container { max-width: 500px; margin: 0 auto; background: var(--light); min-height: 100vh; padding: 20px; box-sizing: border-box; box-shadow: 0 0 20px rgba(0,0,0,0.1); }
+        
         .nav { display: flex; gap: 10px; margin-bottom: 20px; position: sticky; top: 0; background: var(--light); padding: 10px 0; z-index: 10; }
         .nav button { flex: 1; padding: 12px; border: none; border-radius: 8px; background: #ddd; font-weight: bold; cursor: pointer; }
         .nav button.active { background: var(--primary); color: white; }
+        
         .card { background: var(--white); padding: 15px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); margin-bottom: 20px; border-top: 4px solid var(--primary); }
-        .day-header { display: flex; justify-content: space-between; align-items: center; }
-        input, textarea { width: 100%; box-sizing: border-box; padding: 12px; margin-top: 4px; border: 1px solid #edf2f7; border-radius: 8px; background: #f8fafc; font-size: 1rem; }
-        textarea { height: 70px; resize: none; }
+        input, textarea, select { width: 100%; box-sizing: border-box; padding: 12px; margin-top: 4px; border: 1px solid #edf2f7; border-radius: 8px; background: #f8fafc; font-size: 1rem; }
+        textarea { height: 80px; resize: none; }
+        
         .btn-save { background: var(--primary); color: white; border: none; padding: 12px; border-radius: 8px; width: 100%; font-weight: bold; margin-top: 15px; cursor: pointer; }
         .btn-add-list { background: var(--accent); color: white; border: none; padding: 6px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: bold; cursor: pointer; }
-        .shopping-item { display: flex; align-items: center; padding: 12px; background: white; border-radius: 8px; margin-bottom: 6px; }
+        
+        /* Shopping List Display */
+        .store-header { background: var(--dark); color: white; padding: 8px 15px; border-radius: 8px; margin-top: 20px; font-weight: bold; text-transform: uppercase; }
+        .category-header { font-weight: bold; font-size: 0.7rem; color: #95a5a6; text-transform: uppercase; margin: 10px 0 5px 15px; }
+        .shopping-item { display: flex; align-items: center; padding: 12px; background: white; border-radius: 8px; margin-bottom: 6px; margin-left: 10px; }
+        .shopping-item input { width: 20px; height: 20px; margin-right: 12px; }
         .shopping-item.checked { opacity: 0.4; text-decoration: line-through; order: 99; }
-        .category-header { font-weight: bold; font-size: 0.7rem; color: #95a5a6; text-transform: uppercase; margin: 15px 0 5px 5px; }
         
         /* Modal Style */
-        #picker-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 100; }
-        .modal-content { background: white; width: 85%; max-width: 400px; padding: 20px; border-radius: 15px; max-height: 80vh; overflow-y: auto; }
-        .modal-item { display: flex; align-items: center; padding: 10px 0; border-bottom: 1px solid #eee; }
-        .modal-item input { margin-right: 15px; transform: scale(1.3); }
-        .hidden { display: none; }
+        #picker-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center; z-index: 1000; }
+        .modal-content { background: white; width: 90%; max-width: 420px; padding: 20px; border-radius: 15px; max-height: 85vh; overflow-y: auto; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+        .modal-item { padding: 15px 0; border-bottom: 1px solid #eee; }
+        .modal-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+        .modal-row input { width: 22px; height: 22px; flex-shrink: 0; }
+        .hidden { display: none !important; }
     </style>
 </head>
 <body>
@@ -39,11 +47,11 @@
     </div>
 
     <div id="page-plan">
-        <div id="meal-container">Fetching plan...</div>
+        <div id="meal-container">Updating from Google...</div>
     </div>
 
     <div id="page-shop" class="hidden">
-        <h2 style="margin-top:0">My Shopping List</h2>
+        <h2 style="margin:0">My Shopping List</h2>
         <div id="shopping-container" style="display: flex; flex-direction: column;"></div>
         <button class="btn-save" style="background: #e74c3c; margin-top: 40px;" onclick="clearList()">🗑 Clear Checked Items</button>
     </div>
@@ -51,21 +59,21 @@
 
 <div id="picker-modal" class="hidden">
     <div class="modal-content">
-        <h3 style="margin-top:0">Add to List</h3>
-        <p style="font-size: 0.8rem; color: #666;">Select only the items you need:</p>
+        <h3 style="margin-top:0">Select Items & Stores</h3>
         <div id="modal-items-list"></div>
-        <button class="btn-save" onclick="confirmAdd()">Add Selected Items</button>
-        <button class="btn-save" style="background:#95a5a6; margin-top:5px" onclick="closeModal()">Cancel</button>
+        <button class="btn-save" onclick="confirmAdd()">Add Selected</button>
+        <button class="btn-save" style="background:#95a5a6; margin-top:8px" onclick="closeModal()">Cancel / Close</button>
     </div>
 </div>
 
 <script>
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyXSCfmOtrTAJw9_o-MQD1p9DEqHf179gTNVUaR7UqbmDwBdURBmsL7jooQb-98azev/exec";
+    const STORES = ["Costco", "Winco", "Trader Joes", "Safeway", "Convenience Store", "Other"];
     const categoryMap = {
-        "Produce": ["cilantro", "tomato", "onion", "lime", "pepper", "lettuce", "garlic", "spinach", "fruit", "veggie", "corn", "jalapeno", "avocado"],
-        "Meat": ["pork", "beef", "chicken", "shoulder", "steak", "sausage", "bacon", "meat", "carnitas"],
-        "Dairy": ["milk", "cheese", "butter", "yogurt", "crema", "cotija", "egg"],
-        "Pantry": ["beans", "rice", "broth", "oil", "can", "pasta", "spice", "sugar", "flour", "chips", "tortillas"]
+        "Produce": ["cilantro", "tomato", "onion", "lime", "pepper", "lettuce", "garlic", "spinach", "fruit", "veggie", "corn", "jalapeno", "avocado", "pico"],
+        "Meat": ["pork", "beef", "chicken", "shoulder", "steak", "sausage", "bacon", "meat", "carnitas", "al pastor"],
+        "Dairy": ["milk", "cheese", "butter", "yogurt", "crema", "cotija", "egg", "yogurt"],
+        "Pantry": ["beans", "rice", "broth", "oil", "can", "pasta", "spice", "sugar", "flour", "chips", "tortillas", "pizza"]
     };
 
     let tempItems = [];
@@ -80,62 +88,87 @@
     }
 
     async function loadMeals() {
-        const resp = await fetch(SCRIPT_URL);
-        const data = await resp.json();
-        const container = document.getElementById('meal-container');
-        container.innerHTML = '';
-        data.forEach(row => {
-            const card = document.createElement('div');
-            card.className = 'card';
-            card.innerHTML = `
-                <div class="day-header"><h3 style="margin:0">${row.day}</h3><button class="btn-add-list" onclick="openPicker('${row.ingredients}')">+ To List</button></div>
-                <input type="text" value="${row.meal || ''}" id="meal-${row.day}" placeholder="Meal">
-                <input type="text" value="${row.family || ''}" id="family-${row.day}" placeholder="Family">
-                <textarea id="ing-${row.day}" placeholder="Ingredients...">${row.ingredients || ''}</textarea>
-                <button class="btn-save" onclick="saveMeal('${row.day}')">Save</button>`;
-            container.appendChild(card);
-        });
+        try {
+            const resp = await fetch(SCRIPT_URL);
+            const data = await resp.json();
+            const container = document.getElementById('meal-container');
+            container.innerHTML = '';
+            data.forEach(row => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.innerHTML = `
+                    <div style="display:flex; justify-content:space-between; align-items:center">
+                        <h3 style="margin:0">${row.day}</h3>
+                        <button class="btn-add-list" onclick="openPicker('${row.ingredients.replace(/'/g, "\\'")}')">+ To List</button>
+                    </div>
+                    <input type="text" value="${row.meal || ''}" id="meal-${row.day}" placeholder="Meal Name">
+                    <input type="text" value="${row.family || ''}" id="family-${row.day}" placeholder="Who's cooking?">
+                    <textarea id="ing-${row.day}" placeholder="Ingredients (comma separated)">${row.ingredients || ''}</textarea>
+                    <button class="btn-save" onclick="saveMeal('${row.day}')">Save</button>`;
+                container.appendChild(card);
+            });
+        } catch(e) { console.error("Load failed", e); }
     }
 
     async function saveMeal(day) {
-        const btn = event.target; btn.innerText = "Saving...";
-        const payload = { day, meal: document.getElementById(`meal-${day}`).value, family: document.getElementById(`family-${day}`).value, ingredients: document.getElementById(`ing-${day}`).value };
+        const btn = event.target; 
+        const originalText = btn.innerText;
+        btn.innerText = "Saving...";
+        const payload = { 
+            day, 
+            meal: document.getElementById(`meal-${day}`).value, 
+            family: document.getElementById(`family-${day}`).value, 
+            ingredients: document.getElementById(`ing-${day}`).value 
+        };
         await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) });
-        btn.innerText = "Saved!"; setTimeout(() => btn.innerText = "Save", 2000);
+        btn.innerText = "Saved!"; 
+        setTimeout(() => btn.innerText = originalText, 2000);
     }
 
-    // --- PICKER MODAL LOGIC ---
     function openPicker(ingredients) {
-        if(!ingredients || ingredients === "undefined" || ingredients === "") return alert("No ingredients listed!");
+        if(!ingredients || ingredients === "undefined" || ingredients.trim() === "") return alert("No ingredients to add!");
         tempItems = ingredients.split(',').map(i => i.trim());
         const listContainer = document.getElementById('modal-items-list');
         listContainer.innerHTML = '';
+        
         tempItems.forEach((item, idx) => {
-            listContainer.innerHTML += `<div class="modal-item"><input type="checkbox" id="check-${idx}" checked><label for="check-${idx}">${item}</label></div>`;
+            let options = STORES.map(s => `<option value="${s}">${s}</option>`).join('');
+            listContainer.innerHTML += `
+                <div class="modal-item">
+                    <div class="modal-row">
+                        <input type="checkbox" id="check-${idx}" checked>
+                        <label for="check-${idx}" style="font-weight:bold">${item}</label>
+                    </div>
+                    <select id="store-${idx}">${options}</select>
+                </div>`;
         });
         document.getElementById('picker-modal').classList.remove('hidden');
     }
 
-    function closeModal() { document.getElementById('picker-modal').classList.add('hidden'); }
+    function closeModal() { 
+        document.getElementById('picker-modal').classList.add('hidden'); 
+    }
 
     function confirmAdd() {
         let list = JSON.parse(localStorage.getItem('myShoppingList') || '[]');
         tempItems.forEach((item, idx) => {
-            if(document.getElementById(`check-${idx}`).checked) {
-                list.push({ name: item, checked: false });
+            const isChecked = document.getElementById(`check-${idx}`).checked;
+            if(isChecked) {
+                list.push({ 
+                    name: item, 
+                    store: document.getElementById(`store-${idx}`).value,
+                    checked: false,
+                    id: Date.now() + idx // Unique ID for safety
+                });
             }
         });
         localStorage.setItem('myShoppingList', JSON.stringify(list));
         closeModal();
-        alert("Selected items added!");
+        showPage('shop'); // Jump to shopping list to show it worked
     }
 
-    // --- SHOPPING LIST LOGIC ---
     function getAisle(item) {
         item = item.toLowerCase();
-        if(item.includes('costco')) return "📦 COSTCO";
-        if(item.includes('safeway')) return "🔴 SAFEWAY";
-        if(item.includes('winco')) return "🟢 WINCO";
         for (const [aisle, keywords] of Object.entries(categoryMap)) {
             if (keywords.some(k => item.includes(k))) return aisle;
         }
@@ -146,29 +179,45 @@
         const container = document.getElementById('shopping-container');
         const list = JSON.parse(localStorage.getItem('myShoppingList') || '[]');
         container.innerHTML = '';
+        
+        if(list.length === 0) {
+            container.innerHTML = '<p style="text-align:center; color:#95a5a6; margin-top:20px;">List is empty!</p>';
+            return;
+        }
+
         const grouped = list.reduce((acc, item) => {
+            if (!acc[item.store]) acc[item.store] = {};
             const aisle = getAisle(item.name);
-            if (!acc[aisle]) acc[aisle] = [];
-            acc[aisle].push(item);
+            if (!acc[item.store][aisle]) acc[item.store][aisle] = [];
+            acc[item.store][aisle].push(item);
             return acc;
         }, {});
 
-        Object.keys(grouped).sort().forEach(aisle => {
-            container.innerHTML += `<div class="category-header">${aisle}</div>`;
-            grouped[aisle].forEach(item => {
-                container.innerHTML += `<div class="shopping-item ${item.checked ? 'checked' : ''}">
-                    <input type="checkbox" ${item.checked ? 'checked' : ''} onchange="toggleItem('${item.name}')">
-                    <span>${item.name}</span></div>`;
-            });
+        // Sort Stores by our defined list order
+        STORES.forEach(store => {
+            if(grouped[store]) {
+                container.innerHTML += `<div class="store-header">${store}</div>`;
+                Object.keys(grouped[store]).sort().forEach(aisle => {
+                    container.innerHTML += `<div class="category-header">${aisle}</div>`;
+                    grouped[store][aisle].forEach(item => {
+                        container.innerHTML += `
+                            <div class="shopping-item ${item.checked ? 'checked' : ''}">
+                                <input type="checkbox" ${item.checked ? 'checked' : ''} onchange="toggleItem(${list.indexOf(item)})">
+                                <span>${item.name}</span>
+                            </div>`;
+                    });
+                });
+            }
         });
     }
 
-    function toggleItem(name) {
+    function toggleItem(index) {
         let list = JSON.parse(localStorage.getItem('myShoppingList') || '[]');
-        let item = list.find(i => i.name === name);
-        if(item) item.checked = !item.checked;
-        localStorage.setItem('myShoppingList', JSON.stringify(list));
-        renderShoppingList();
+        if(list[index]) {
+            list[index].checked = !list[index].checked;
+            localStorage.setItem('myShoppingList', JSON.stringify(list));
+            renderShoppingList();
+        }
     }
 
     function clearList() {
